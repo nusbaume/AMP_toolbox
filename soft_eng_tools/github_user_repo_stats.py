@@ -224,7 +224,8 @@ def main_script():
         #and the "review" was not just a comment:
         for review in pr.get_reviews():
             if (review.user.login == username) and \
-                (review.state != "COMMENTED" ):
+                (review.state != "COMMENTED" and
+                 review.state != "PENDING"):
                 #Check that review occured during or
                 #after provided date:
                 submit_date = review.submitted_at.astimezone(denver_time)
@@ -244,6 +245,11 @@ def main_script():
                         max_pr_additions = pr.additions
                         max_pr_num = pr.number
                     #End if
+
+                    #Break out of review loop now that at
+                    #least one review has been found, in
+                    #order to avoid double-counting:
+                    break
 
                 else:
                     #Pull requests are now past the cutoff date,
